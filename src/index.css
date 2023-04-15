@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+}
+
+html {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a:not([class]) {
+  text-decoration: none;
+  color: inherit;
+}
