@@ -9,24 +9,36 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import background from '../assets/login.jpg';
 import { addNewUser } from '../services/auth';
 import LinearProgress from '@mui/material/LinearProgress';
+import Message from '../components/Message';
 
 
 const theme = createTheme();
 
 export default function signup() {
 
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    addNewUser(data.get('email'), data.get('password'), () => {
+    addNewUser(data.get('email'), data.get('password'), (err) => {
       setLoading(false);
+      if (err) {
+        setMessage('Email already exists');
+        setSeverity('error');
+        setOpen(true);
+        return;
+      }
+      navigate('/');
     });
   };
 
@@ -51,7 +63,7 @@ export default function signup() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box sx={{ width: '100%' }}>
             <LinearProgress
-              color='secondary'
+              color='primary'
               sx={{
                 visibility: loading ? 'visible' : 'hidden',
                 height: '5px',
@@ -114,6 +126,7 @@ export default function signup() {
           </Box>
         </Grid>
       </Grid>
+      <Message open={open} setOpen={setOpen} message={message} severity={severity}/>
     </ThemeProvider>
   );
 }

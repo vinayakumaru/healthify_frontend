@@ -13,20 +13,33 @@ import { Link } from 'react-router-dom';
 import background from '../assets/login.jpg';
 import { signIn } from '../services/auth';
 import LinearProgress from '@mui/material/LinearProgress';
+import Message from '../components/Message';
+import { useNavigate } from 'react-router-dom';
 
 
 const theme = createTheme();
 
 export default function login() {
 
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    signIn(data.get('email'), data.get('password'), () => {
+    signIn(data.get('email'), data.get('password'), (err) => {
       setLoading(false);
+      if(err){
+        setMessage('Authentication failed, Please check your credentials');
+        setSeverity('error');
+        setOpen(true);
+        return;
+      }
+      navigate('/home');
     });
   };
 
@@ -51,7 +64,7 @@ export default function login() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box sx={{ width: '100%' }}>
             <LinearProgress
-              color='secondary'
+              color='primary'
               sx={{
                 visibility: loading ? 'visible' : 'hidden',
                 height: '5px',
@@ -117,6 +130,7 @@ export default function login() {
           </Box>
         </Grid>
       </Grid>
+      <Message open={open} setOpen={setOpen} message={message} severity={severity}/>
     </ThemeProvider>
   );
 }

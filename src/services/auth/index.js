@@ -19,27 +19,21 @@ const auth = getAuth(app);
 
 export function addNewUser(email, password, callback) {
     createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            callback();
+        .then((_) => {
+            callback(null);
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            callback();
+            callback(error);
         });
 }
 
 export function signIn(email, password, callback) {
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            callback();
+        .then((_) => {
+            callback(null);
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            callback();
+            callback(error);
         });
 }
 
