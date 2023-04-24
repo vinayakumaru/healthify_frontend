@@ -19,17 +19,18 @@ const auth = getAuth(app);
 
 export function addNewUser(email, password, callback) {
     createUserWithEmailAndPassword(auth, email, password)
-        .then((_) => {
-            callback(null);
+        .then((user) => {
+            callback(null,user.user.uid);
         })
         .catch((error) => {
-            callback(error);
+            callback(error,null);
         });
 }
 
 export function signIn(email, password, callback) {
     signInWithEmailAndPassword(auth, email, password)
-        .then((_) => {
+        .then((user) => {
+            storeInCache(email,user.user.uid);
             callback(null);
         })
         .catch((error) => {
@@ -38,6 +39,7 @@ export function signIn(email, password, callback) {
 }
 
 export function signOut() {
+    removeFromCache();
     auth.signOut();
 }
 
@@ -48,3 +50,22 @@ export function getCurrentUser() {
 export function isUserSignedIn() {
     return auth.currentUser !== null;
 }
+
+function storeInCache(email,userId){
+    localStorage.setItem("user", userId);
+    localStorage.setItem("type", email.includes('doctor') ? 'doctor' : 'user');
+}
+
+function removeFromCache(){
+    localStorage.removeItem("user");
+    localStorage.removeItem("type");
+}
+
+export function getUserId(){
+    return localStorage.getItem("user");
+}
+
+export function getUserType(){
+    return localStorage.getItem("type");
+}
+

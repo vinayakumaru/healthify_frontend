@@ -14,6 +14,7 @@ import background from '../assets/login.jpg';
 import { addNewUser } from '../services/auth';
 import LinearProgress from '@mui/material/LinearProgress';
 import Message from '../components/Message';
+import axios from 'axios';
 
 
 const theme = createTheme();
@@ -24,13 +25,15 @@ export default function signup() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('success');
+  const [num, setNum] = React.useState("");
+  const [age, setAge] = React.useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    addNewUser(data.get('email'), data.get('password'), (err) => {
+    addNewUser(data.get('email'), data.get('password'), (err,message) => {
       setLoading(false);
       if (err) {
         setMessage('Email already exists');
@@ -38,8 +41,40 @@ export default function signup() {
         setOpen(true);
         return;
       }
-      navigate('/');
+      const user = {
+        userId: message,
+        email: data.get('email'),
+        phoneNumber: num,
+        name: data.get('name'),
+        age: parseInt(age),
+      };
+      axios.post('http://localhost:8082/user/add', user)
+        .then((_) => {
+          setMessage('Registration Successful');
+          setSeverity('success');
+          setOpen(true);
+          navigate('/');
+        })
+        .catch((_) => {
+          setMessage('Registration Failed');
+          setSeverity('error');
+          setOpen(true);
+        });
     });
+  };
+
+  const handleChange = (e) => {
+    const regex = /^[0-9\b]+$/;
+    if ((e.target.value === '' || regex.test(e.target.value)) && e.target.value.length <= 10) {
+      setNum(e.target.value);
+    }
+  };
+
+  const handleAgeChange = (e) => {
+    const regex = /^[0-9\b]+$/;
+    if ((e.target.value === '' || regex.test(e.target.value)) && e.target.value.length <= 3) {
+      setAge(e.target.value);
+    }
   };
 
   return (
@@ -71,7 +106,7 @@ export default function signup() {
           </Box>
           <Box
             sx={{
-              my: 8,
+              my: 2,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
@@ -84,7 +119,7 @@ export default function signup() {
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -92,8 +127,37 @@ export default function signup() {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
                 autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                label="name"
+                id="name"
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="phone"
+                label="phone"
+                id="phone"
+                type="text"
+                onChange={(e) => handleChange(e)}
+                value={num}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="age"
+                label="age"
+                id="age"
+                type="text"
+                onChange={(e) => handleAgeChange(e)}
+                value={age}
               />
               <TextField
                 margin="normal"
@@ -103,7 +167,6 @@ export default function signup() {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
               />
               <Button
                 type="submit"
@@ -126,7 +189,7 @@ export default function signup() {
           </Box>
         </Grid>
       </Grid>
-      <Message open={open} setOpen={setOpen} message={message} severity={severity}/>
+      <Message open={open} setOpen={setOpen} message={message} severity={severity} />
     </ThemeProvider>
   );
 }

@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import background from '../assets/login.jpg';
-import { signIn } from '../services/auth';
+import { getUserId, getUserType, signIn } from '../services/auth';
 import LinearProgress from '@mui/material/LinearProgress';
 import Message from '../components/Message';
 import { useNavigate } from 'react-router-dom';
@@ -39,9 +39,14 @@ export default function login() {
         setOpen(true);
         return;
       }
-      navigate('/home');
+      navigateToHome();
     });
   };
+
+  const navigateToHome = () => {
+    if(getUserType() === 'doctor') navigate('/doctorHome');
+    else if(getUserType() === 'user') navigate('/home');
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -72,7 +77,7 @@ export default function login() {
           </Box>
           <Box
             sx={{
-              my: 8,
+              my: 2,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
@@ -85,7 +90,7 @@ export default function login() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required

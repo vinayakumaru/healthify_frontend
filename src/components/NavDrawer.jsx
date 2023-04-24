@@ -176,6 +176,7 @@ export default function NavDrawer(props) {
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
+              onClick={() => navigate("/history")}
             >
               <ListItemIcon
                 sx={{
