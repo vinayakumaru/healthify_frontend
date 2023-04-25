@@ -1,15 +1,14 @@
 import * as React from 'react';
 import NavDrawer from '../components/NavDrawer';
 import Search from '../components/Search';
-import { Box, Button, Divider, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import axios from 'axios';
-import { getCurrentUser, getUserId } from '../services/auth';
+import { getUserId } from '../services/auth';
 import Message from '../components/Message';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 export default function BookAppointment() {
     const [search, setSearch] = React.useState('');

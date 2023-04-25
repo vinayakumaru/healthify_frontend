@@ -11,14 +11,18 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import AlertDialog from '../components/AlertDialog';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router-dom';
+import extractDate from '../utils/extractDate';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 export default function DoctorHome() {
 
     const [appointments, setAppointments] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [deleteAppointmentId, setDeleteAppointmentId] = React.useState('');
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         const requestUrl = 'http://localhost:8082/appointment/doctor/' + getUserId();
@@ -43,17 +47,6 @@ export default function DoctorHome() {
                 console.log(error);
             });
     };
-
-    const extractDate = (dateString) => {
-        const dateParts = dateString.split(" ");
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const year = dateParts[5];
-        const month = monthNames.indexOf(dateParts[1]) + 1;
-        const day = dateParts[2];
-        const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-        return formattedDate;
-    }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -87,10 +80,10 @@ export default function DoctorHome() {
                             sx={{ backgroundColor: '#5399DE' }}
                         >
                             <TableRow>
-                                <TableCell>Hospital</TableCell>
-                                <TableCell align="right">Doctor</TableCell>
-                                <TableCell align="right">Location</TableCell>
-                                <TableCell align="right">Date</TableCell>
+                                <TableCell>Patient Name</TableCell>
+                                <TableCell align="right">Age</TableCell>
+                                <TableCell align="right">date</TableCell>
+                                <TableCell align="right">view</TableCell>
                                 <TableCell align="right">Cancel</TableCell>
                             </TableRow>
                         </TableHead>
@@ -102,10 +95,24 @@ export default function DoctorHome() {
                                     key={appointment.appointmentId}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
-                                    <TableCell component="th" scope="row">{appointment.hospitalName}</TableCell>
-                                    <TableCell align="right">{appointment.doctorName}</TableCell>
-                                    <TableCell align="right">{appointment.hospitalLocation}</TableCell>
+                                    <TableCell component="th" scope="row">{appointment.userName}</TableCell>
+                                    <TableCell align="right">{appointment.userAge}</TableCell>
                                     <TableCell align="right">{extractDate(appointment.date)}</TableCell>
+                                    <TableCell align="right">
+                                        <IconButton
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#C6DDF4',
+                                                },
+                                            }}
+                                            color="primary"
+                                            onClick={() => {
+                                                navigate(`/doctor/appointment/${appointment.appointmentId}`);
+                                            }}
+                                        >
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
                                     <TableCell align="right">
                                         <IconButton
                                             color="error"
@@ -114,7 +121,7 @@ export default function DoctorHome() {
                                                 setOpen(true);
                                             }}
                                         >
-                                            <DeleteIcon />
+                                            <HighlightOffIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>

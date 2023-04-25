@@ -14,12 +14,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import HistoryIcon from '@mui/icons-material/History';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { Home, Logout } from '@mui/icons-material';
-import { Route, Routes } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../services/auth';
 
@@ -51,7 +48,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -122,14 +118,13 @@ export default function NavDrawer(props) {
           <Typography variant="h6" noWrap component="div">
             Healthify
           </Typography>
-
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader />
         <Divider />
         <List>
-          <ListItem key={"Home"} disablePadding sx={{ display: 'block' }}>
+          {/* <ListItem key={"Home"} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -148,7 +143,7 @@ export default function NavDrawer(props) {
               </ListItemIcon>
               <ListItemText primary={"Home"} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem key={"Book Appointment"} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={{

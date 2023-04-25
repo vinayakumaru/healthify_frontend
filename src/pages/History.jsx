@@ -9,15 +9,19 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { getUserId } from '../services/auth';
-import { Box, Divider, Typography,IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Divider, Typography, IconButton } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import AlertDialog from '../components/AlertDialog';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import PrescriptionDialog from '../components/PrescriptionDialog';
 
 export default function History() {
 
     const [appointments, setAppointments] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [deleteAppointmentId, setDeleteAppointmentId] = React.useState('');
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const [appointmentId, setAppointmentId] = React.useState('');
 
 
     React.useEffect(() => {
@@ -57,6 +61,7 @@ export default function History() {
 
     return (
         <NavDrawer>
+            <PrescriptionDialog open={openDialog} setOpen={setOpenDialog} appointmentId={appointmentId}/>
             <Box
                 sx={{
                     display: 'flex',
@@ -113,14 +118,14 @@ export default function History() {
                                     <TableCell align="right">{appointment.hospitalLocation}</TableCell>
                                     <TableCell align="right">{extractDate(appointment.date)}</TableCell>
                                     <TableCell align="right">
-                                    <IconButton
+                                        <IconButton
                                             color="error"
                                             onClick={() => {
                                                 setDeleteAppointmentId(appointment.appointmentId);
                                                 setOpen(true);
                                             }}
                                         >
-                                            <DeleteIcon />
+                                            <HighlightOffIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -154,8 +159,23 @@ export default function History() {
                                     <TableCell component="th" scope="row">{appointment.hospitalName}</TableCell>
                                     <TableCell align="right">{appointment.doctorName}</TableCell>
                                     <TableCell align="right">{appointment.hospitalLocation}</TableCell>
-                                    <TableCell align="right">{appointment.date}</TableCell>
-                                    <TableCell align="right">{appointment.status}</TableCell>
+                                    <TableCell align="right">{extractDate(appointment.date)}</TableCell>
+                                    <TableCell align="right">
+                                        <IconButton
+                                            color='primary'
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#C6DDF4',
+                                                },
+                                            }}
+                                            onClick={() => {
+                                                setAppointmentId(appointment.appointmentId);
+                                                setOpenDialog(true);
+                                            }}
+                                        >
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
